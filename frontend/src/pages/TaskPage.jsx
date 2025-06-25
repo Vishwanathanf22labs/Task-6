@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import TaskForm from '../components/TaskForm';
-import TaskItem from '../components/TaskItem';
+import TaskListPage from './TaskListPage';
 import api from '../api';
 
 const STORAGE_KEY = 'softDeletedTaskIds';
@@ -9,6 +9,7 @@ const STORAGE_KEY = 'softDeletedTaskIds';
 const TaskPage = () => {
   const [tasks, setTasks] = useState([]);
   const [editingTask, setEditingTask] = useState(null);
+  const [currentView, setCurrentView] = useState('list'); // 'list' or 'form'
   const [softDeletedIds, setSoftDeletedIds] = useState(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored ? JSON.parse(stored) : [];
@@ -39,12 +40,12 @@ const TaskPage = () => {
         setEditingTask(null);
       } else {
         const createdTask = await api.post('/', taskData);
-     
         updateSoftDeletedStorage(
           softDeletedIds.filter((id) => id !== createdTask.data.id)
         );
       }
       fetchTasks();
+      setCurrentView('list');
     } catch (error) {
       console.error('Failed to create/update task:', error);
     }
@@ -64,24 +65,41 @@ const TaskPage = () => {
     }
   };
 
+  const handleEdit = (task) => {
+    setEditingTask(task);
+    setCurrentView('form');
+  };
+
+  const handleCreateNew = () => {
+    setEditingTask(null);
+    setCurrentView('form');
+  };
+
+  const handleBackToList = () => {
+    setCurrentView('list');
+    setEditingTask(null);
+  };
+
   const visibleTasks = tasks.filter((task) => !softDeletedIds.includes(task.id));
 
+  if (currentView === 'form') {
+    return (
+      <TaskForm
+        onSubmit={handleCreate}
+        editingTask={editingTask}
+        onBack={handleBackToList}
+      />
+    );
+  }
+
   return (
-    <div className="max-w-3xl mx-auto mt-10 space-y-6">
-      <h1 className="text-3xl font-bold text-center">Task Manager</h1>
-      <TaskForm onSubmit={handleCreate} editingTask={editingTask} />
-      <div className="space-y-4">
-        {visibleTasks.map((task) => (
-          <TaskItem
-            key={task.id}
-            task={task}
-            onDelete={handleSoftDelete}
-            onToggle={handleToggle}
-            onEdit={(task) => setEditingTask(task)}
-          />
-        ))}
-      </div>
-    </div>
+    <TaskListPage
+      tasks={visibleTasks}
+      onCreateNew={handleCreateNew}
+      onDelete={handleSoftDelete}
+      onToggle={handleToggle}
+      onEdit={handleEdit}
+    />
   );
 };
 
