@@ -4,10 +4,15 @@ import TaskForm from '../components/TaskForm';
 import TaskItem from '../components/TaskItem';
 import api from '../api';
 
+const STORAGE_KEY = 'softDeletedTaskIds';
+
 const TaskPage = () => {
   const [tasks, setTasks] = useState([]);
   const [editingTask, setEditingTask] = useState(null);
-  const [softDeletedIds, setSoftDeletedIds] = useState([]);
+  const [softDeletedIds, setSoftDeletedIds] = useState(() => {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
+  });
 
   const fetchTasks = async () => {
     try {
@@ -22,13 +27,22 @@ const TaskPage = () => {
     fetchTasks();
   }, []);
 
+  const updateSoftDeletedStorage = (updatedIds) => {
+    setSoftDeletedIds(updatedIds);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedIds));
+  };
+
   const handleCreate = async (taskData) => {
     try {
       if (editingTask) {
         await api.put(`/${editingTask.id}`, taskData);
         setEditingTask(null);
       } else {
-        await api.post('/', taskData);
+        const createdTask = await api.post('/', taskData);
+     
+        updateSoftDeletedStorage(
+          softDeletedIds.filter((id) => id !== createdTask.data.id)
+        );
       }
       fetchTasks();
     } catch (error) {
@@ -37,7 +51,8 @@ const TaskPage = () => {
   };
 
   const handleSoftDelete = (id) => {
-    setSoftDeletedIds((prev) => [...prev, id]);
+    const updated = [...softDeletedIds, id];
+    updateSoftDeletedStorage(updated);
   };
 
   const handleToggle = async (task) => {
