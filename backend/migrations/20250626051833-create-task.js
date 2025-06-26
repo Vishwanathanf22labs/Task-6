@@ -18,6 +18,11 @@ export async function up(queryInterface, Sequelize) {
       type: Sequelize.BOOLEAN,
       defaultValue: false
     },
+    inactive: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+      allowNull: false
+    },
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE,
@@ -29,6 +34,7 @@ export async function up(queryInterface, Sequelize) {
       defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
     }
   });
+  await queryInterface.addIndex('Tasks', ['inactive']);
 }
 
 export async function down(queryInterface, Sequelize) {

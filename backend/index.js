@@ -1,8 +1,8 @@
-import cors from 'cors';
-import dotenv from 'dotenv';
-import express from 'express';
-import taskRoutes from './routes/taskRoutes.js';
-import { sequelize } from './config/database.js';
+const cors = require('cors');
+const dotenv = require('dotenv');
+const express = require('express');
+const taskRoutes = require('./routes/taskRoutes');
+const { sequelize } = require('./config/database');
 
 dotenv.config();
 
@@ -12,19 +12,18 @@ app.use(cors({
   origin: 'http://localhost:5173'
 }));
 
-
 app.use(express.json());
-
 app.use('/api/tasks', taskRoutes);
 
 const PORT = process.env.PORT || 3000;
 
 sequelize.sync()
   .then(() => {
+    console.log('Database synchronized successfully');
     app.listen(PORT, () => {
-      console.log(` Server running on port ${PORT}`);
+      console.log(`Server running on port ${PORT}`);
     });
   })
   .catch(err => {
-    console.error(' Unable to connect to the database:', err);
+    console.error('Unable to connect to the database:', err);
   });

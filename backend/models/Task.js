@@ -1,6 +1,6 @@
-import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../config/database.js';
-import { v4 as uuidv4 } from 'uuid';
+const { Model, DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
+const { v4: uuidv4 } = require('uuid');
 
 class Task extends Model {}
 
@@ -20,12 +20,35 @@ Task.init({
   completed: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
+  },
+  inactive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    allowNull: false,
   }
 }, {
   sequelize,
   modelName: 'Task',
-  tableName: 'Tasks', 
+  tableName: 'Tasks',
   timestamps: true,
+ 
+  defaultScope: {
+    where: {
+      inactive: false
+    }
+  },
+  scopes: {
+    
+    withInactive: {
+      where: {}
+    },
+  
+    onlyInactive: {
+      where: {
+        inactive: true
+      }
+    }
+  }
 });
 
-export default Task;
+module.exports = Task;
