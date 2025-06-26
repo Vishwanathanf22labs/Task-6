@@ -2,7 +2,7 @@
   "name": "backend-task",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
+ 
   "scripts": {
     "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,6 +16,7 @@
     "express": "^4.18.2",
     "mysql2": "^3.11.0",
     "sequelize": "^6.37.3",
+    "sequelize-cli": "^6.6.3",
     "uuid": "^10.0.0"
   },
   "devDependencies": {

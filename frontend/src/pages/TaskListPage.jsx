@@ -27,14 +27,14 @@ const TaskListPage = ({ tasks, onCreateNew, onDelete, onToggle, onEdit }) => {
             </div>
 
             <div className="flex items-center space-x-3">
-              <button className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200">
+              {/* <button className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200">
                 <Search className="w-4 h-4 mr-2" />
                 Search
               </button>
               <button className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200">
                 <Filter className="w-4 h-4 mr-2" />
                 Filter
-              </button>
+              </button> */}
               <button
                 onClick={onCreateNew}
                 className="inline-flex items-center px-6 py-2 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"

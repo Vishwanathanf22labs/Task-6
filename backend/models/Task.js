@@ -1,8 +1,10 @@
-import { DataTypes } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../config/database.js';
 import { v4 as uuidv4 } from 'uuid';
 
-const Task = sequelize.define('Task', {
+class Task extends Model {}
+
+Task.init({
   id: {
     type: DataTypes.UUID,
     defaultValue: () => uuidv4(),
@@ -14,13 +16,15 @@ const Task = sequelize.define('Task', {
   },
   description: {
     type: DataTypes.STRING,
-    allowNull: true,
   },
   completed: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
-  },
+  }
 }, {
+  sequelize,
+  modelName: 'Task',
+  tableName: 'Tasks', 
   timestamps: true,
 });
 
